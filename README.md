@@ -1,162 +1,75 @@
-# 🪒 Barbería Borges - Dashboard en Tiempo Real
+## 💈 Barbería Borges · Dashboard en tiempo real (Streamlit)
 
-Un dashboard moderno y responsive para gestionar y visualizar datos en tiempo real de la Barbería Borges.
+Dashboard de métricas y agenda conectado a PostgreSQL. Interfaz intuitiva, visual y responsive con estilo material.
 
-## ✨ Características
+## 📂 Estructura
 
-- **Dashboard en Tiempo Real**: Actualización automática cada 30 segundos
-- **Métricas Visuales**: Estadísticas de citas, ingresos y barberos activos
-- **Gráficos Interactivos**: Visualización de datos con Recharts
-- **Diseño Material UI**: Interfaz moderna y responsive
-- **Notificaciones**: Sistema de alertas en tiempo real
-- **Gestión de Citas**: Vista de citas del día y próximas citas
-- **Información de la Barbería**: Datos de contacto y horarios
+- `dashboard/`: código de la app Streamlit (KPIs, gráficos, heatmap y explorador de tablas)
+- `schema.sql`: esquema de la base de datos (referencia)
 
-## 🚀 Tecnologías Utilizadas
+## ✨ Funcionalidades
 
-- **Next.js 14** - Framework de React
-- **TypeScript** - Tipado estático
-- **Material UI** - Componentes de UI
-- **Recharts** - Gráficos interactivos
-- **PostgreSQL** - Base de datos
-- **Socket.IO** - Comunicación en tiempo real
+- **KPIs del día**: citas, clientes únicos e ingresos estimados
+- **Citas por barbero**: barras agrupadas (citas/ingresos)
+- **Próximas citas**: tabla filtrable por barbero/servicio
+- **Heatmap de ocupación**: horas x días (próximas 2 semanas)
+- **Top servicios** e **ingresos por día**
+- **Explorador de tablas**: vista, filtro por texto y descarga CSV
+- **Auto‑refresh** configurable (por defecto 30s)
 
-## 📊 Métricas Disponibles
+## 🛠️ Requisitos
 
-### Métricas Principales
-- **Citas Hoy**: Total de citas programadas para hoy
-- **Citas Pendientes**: Citas que aún no se han completado
-- **Ingresos Estimados**: Ingresos proyectados para hoy
-- **Barberos Activos**: Número de barberos disponibles
+- Python 3.10+
+- Acceso a PostgreSQL (credenciales vía variables de entorno)
 
-### Gráficos y Análisis
-- **Citas por Semana**: Distribución de citas por día
-- **Servicios Populares**: Análisis de servicios más solicitados
-- **Próximas Citas**: Lista de citas futuras con priorización
+## ⚙️ Variables de entorno
 
-## 🛠️ Instalación
+Configúralas en `dashboard/.env` (local) o en tu proveedor (Railway):
 
-1. **Clonar el repositorio**
-   ```bash
-   git clone <repository-url>
-   cd barberia_borges
-   ```
+```
+PGHOST=...           # p.ej. trolley.proxy.rlwy.net
+PGPORT=...           # p.ej. 14990
+PGDATABASE=...       # p.ej. railway
+PGUSER=...
+PGPASSWORD=...
+REFRESH_INTERVAL_MS=30000
+```
 
-2. **Instalar dependencias**
-   ```bash
-   npm install
-   ```
+## ▶️ Ejecución local
 
-3. **Configurar variables de entorno**
-   ```bash
-   # Las credenciales de la base de datos ya están configuradas en el código
-   # Host: trolley.proxy.rlwy.net
-   # Puerto: 14990
-   # Base de datos: railway
-   ```
+```bash
+cd dashboard
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+export PGHOST=... PGPORT=... PGDATABASE=... PGUSER=... PGPASSWORD=...
+streamlit run app.py --server.address 0.0.0.0 --server.port 8501
+# Navega a http://localhost:8501
+```
 
-4. **Ejecutar en desarrollo**
-   ```bash
-   npm run dev
-   ```
+## 🐳 Docker (local)
 
-5. **Abrir en el navegador**
-   ```
-   http://localhost:3000
-   ```
+```bash
+docker build -t barberia-dashboard -f dashboard/Dockerfile dashboard
+docker run --rm -p 8501:8501 \
+  -e PGHOST=$PGHOST -e PGPORT=$PGPORT -e PGDATABASE=$PGDATABASE \
+  -e PGUSER=$PGUSER -e PGPASSWORD=$PGPASSWORD \
+  barberia-dashboard
+```
 
-## 📱 Funcionalidades
+## 🚀 Despliegue en Railway
 
-### Dashboard Principal
-- **Métricas en Tiempo Real**: Actualización automática de estadísticas
-- **Gráficos Interactivos**: Hover para ver detalles
-- **Responsive Design**: Funciona en móviles y tablets
+1. Conecta el repo `minarkap/barberia-borges` en Railway.
+2. Crea un servicio con Dockerfile `dashboard/Dockerfile`.
+3. Define variables: `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD`, `REFRESH_INTERVAL_MS`.
+4. Deploy de la rama `feat/realtime-dashboard` o de `main` tras el merge del PR.
 
-### Gestión de Citas
-- **Vista del Día**: Todas las citas programadas para hoy
-- **Estado de Citas**: Completadas, pendientes, próximas
-- **Información Detallada**: Cliente, barbero, servicio, precio
+Más detalles en `dashboard/README_DEPLOY.md`.
 
-### Notificaciones
-- **Alertas en Tiempo Real**: Nuevas citas y recordatorios
-- **Priorización**: Alta, media, baja prioridad
-- **Historial**: Últimas 10 notificaciones
+## 📦 Dependencias clave
 
-## 🎨 Diseño
+- Streamlit, Plotly, Pandas, psycopg 3, python-dotenv
 
-### Tema Oscuro
-- **Fondo**: Gradiente oscuro (#0a0a0a)
-- **Tarjetas**: Efectos de hover y sombras
-- **Colores**: Paleta azul con acentos
+## 📝 Notas
 
-### Componentes
-- **MetricCard**: Tarjetas de métricas con iconos
-- **CitasHoy**: Tabla de citas del día
-- **Graficos**: Gráficos de barras y dona
-- **Notificaciones**: Lista de alertas
-
-## 🔧 API Endpoints
-
-- `GET /api/estadisticas-hoy` - Estadísticas del día actual
-- `GET /api/estadisticas-semana` - Estadísticas de la semana
-- `GET /api/citas-hoy` - Citas del día actual
-- `GET /api/proximas-citas` - Próximas citas
-- `GET /api/barberia-info` - Información de la barbería
-
-## 📊 Base de Datos
-
-### Tablas Principales
-- **agenda**: Citas de clientes
-- **barberos**: Personal de la barbería
-- **servicios**: Servicios ofrecidos
-- **barberia_info**: Información de la barbería
-- **dias**: Días válidos para citas
-
-### Consultas Optimizadas
-- Estadísticas en tiempo real
-- Agregaciones por día y servicio
-- Cálculo de ingresos estimados
-
-## 🚀 Despliegue
-
-### Vercel (Recomendado)
-1. Conectar repositorio a Vercel
-2. Configurar variables de entorno
-3. Desplegar automáticamente
-
-### Otros Proveedores
-- **Netlify**: Compatible con Next.js
-- **Railway**: Mismo proveedor que la base de datos
-- **AWS/GCP**: Configuración manual
-
-## 🔄 Actualizaciones en Tiempo Real
-
-- **Intervalo**: 30 segundos
-- **Métricas**: Actualización automática
-- **Notificaciones**: Simulación de eventos
-- **Gráficos**: Re-renderizado dinámico
-
-## 📱 Responsive Design
-
-- **Desktop**: Layout completo con todas las métricas
-- **Tablet**: Reorganización de columnas
-- **Mobile**: Stack vertical de componentes
-
-## 🎯 Próximas Mejoras
-
-- [ ] Autenticación de usuarios
-- [ ] Gestión de citas (crear/editar/eliminar)
-- [ ] Reportes PDF
-- [ ] Integración con WhatsApp
-- [ ] Dashboard de barberos individuales
-- [ ] Sistema de reservas online
-
-## 📞 Soporte
-
-Para soporte técnico o consultas:
-- **Email**: [tu-email@ejemplo.com]
-- **WhatsApp**: [tu-numero]
-
----
-
-**Desarrollado con ❤️ para Barbería Borges**
+- Se ha eliminado el boilerplate de Next.js; el proyecto ahora es sólo el dashboard de Streamlit.
+- El esquema de referencia está en `schema.sql`.
