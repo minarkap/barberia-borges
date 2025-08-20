@@ -1,0 +1,19 @@
+{
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile"
+  },
+  "deploy": {
+    "restartPolicyType": "ON_FAILURE",
+    "healthcheckPath": "/_stcore/health"
+  },
+  "variables": [
+    { "name": "PGHOST", "required": true },
+    { "name": "PGPORT", "required": true },
+    { "name": "PGDATABASE", "required": true },
+    { "name": "PGUSER", "required": true },
+    { "name": "PGPASSWORD", "required": true },
+    { "name": "REFRESH_INTERVAL_MS", "defaultValue": "30000" }
+  ]
+}
+
