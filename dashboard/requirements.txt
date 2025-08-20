@@ -3,5 +3,4 @@ psycopg[binary]==3.2.3
 pandas==2.2.2
 plotly==5.23.0
 python-dotenv==1.0.1
-watchdog==5.0.3
 
