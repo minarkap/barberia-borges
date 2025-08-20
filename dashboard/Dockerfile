@@ -13,16 +13,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
-RUN pip install -U pip && pip install -r requirements.txt
+RUN pip install -U pip && pip install --prefer-binary -r requirements.txt
 
 COPY . .
 
 EXPOSE 8501
 
 ENV STREAMLIT_SERVER_HEADLESS=true \
-    STREAMLIT_SERVER_PORT=8501 \
     STREAMLIT_SERVER_ADDRESS=0.0.0.0
 
-CMD ["streamlit", "run", "app.py"]
+CMD ["sh", "-c", "streamlit run app.py --server.headless true --server.address 0.0.0.0 --server.port ${PORT:-8501}"]
 
 
