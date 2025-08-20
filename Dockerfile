@@ -6,16 +6,10 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Dependencias del sistema para psycopg (psycopg3 wheels no requieren libpq, pero mantenemos básicos)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt ./
+COPY dashboard/requirements.txt ./requirements.txt
 RUN pip install -U pip && pip install -r requirements.txt
 
-COPY . .
+COPY dashboard/ .
 
 EXPOSE 8501
 
