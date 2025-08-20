@@ -25,6 +25,8 @@ def get_env(name: str, default: str | None = None) -> str:
     value = os.getenv(name, default)
     if value is None:
         raise RuntimeError(f"Falta variable de entorno: {name}")
+    # Sanitiza espacios y comillas accidentales (p.ej. PGHOST="host")
+    value = value.strip().strip('"').strip("'")
     return value
 
 
